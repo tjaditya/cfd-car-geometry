@@ -1,0 +1,107 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2406                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    p
+    {
+        solver              GAMG;
+        tolerance           1e-07;
+        relTol              0.01;
+
+        smoother            DICGaussSeidel;
+
+        // These are generally safe defaults for external aero
+        nPreSweeps           0;
+        nPostSweeps          2;
+        nFinestSweeps        2;
+        cacheAgglomeration   true;
+        agglomerator         faceAreaPair;
+        mergeLevels          1;
+    }
+
+    U
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-06;
+        relTol          0.05;
+    }
+
+    k
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-06;
+        relTol          0.05;
+    }
+
+    omega
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-06;
+        relTol          0.05;
+    }
+
+    // If you ever run epsilon models
+    epsilon
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-06;
+        relTol          0.05;
+    }
+}
+
+SIMPLE
+{
+    nNonOrthogonalCorrectors 0;
+    consistent              yes;
+
+    // Helps stability on snappy meshes
+    nCorrectors             2;
+
+    // Needed for incompressible steady runs (set a reference)
+    pRefCell                0;
+    pRefValue               0;
+
+    residualControl
+    {
+        p                   1e-3;
+        U                   1e-4;
+        "(k|omega|epsilon)" 1e-4;
+    }
+}
+
+relaxationFactors
+{
+    fields
+    {
+        p                   0.3;
+    }
+
+    equations
+    {
+        U                   0.7;
+        k                   0.5;
+        omega               0.5;
+        epsilon             0.5;
+    }
+}
+
+// ************************************************************************* //
+

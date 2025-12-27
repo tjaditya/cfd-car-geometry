@@ -1,0 +1,48 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      meshDict;
+}
+
+surfaceFile "constant/triSurface/car.stl";
+
+// First-success mesh (coarse but stable)
+maxCellSize 0.6;
+minCellSize 0.15;
+
+// IMPORTANT: boundaryLayers must be a dictionary (even if disabled)
+boundaryLayers
+{
+    nLayers 0;
+}
+
+// Domain tuned to your STL position
+meshBox (-12 -12 0) (50 12 12);
+
+boundaryPatch
+{
+    name car;
+    type patch;
+}
+
+localRefinement
+{
+    carRefine
+    {
+        type surface;
+        surfaceFile "constant/triSurface/car.stl";
+        additionalRefinementLevels 2;
+    }
+
+    wakeBox
+    {
+        type box;
+        min (0 -3 0);
+        max (35 3 4);
+        additionalRefinementLevels 1;
+    }
+}
+
+renumberMesh true;

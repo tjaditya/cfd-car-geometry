@@ -1,0 +1,118 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2406                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application         simpleFoam;
+
+startFrom           startTime;
+startTime           0;
+
+stopAt              endTime;
+endTime             2000;
+
+deltaT              1;
+
+// Write every N SIMPLE iterations
+writeControl        timeStep;
+writeInterval       100;
+
+purgeWrite          0;
+
+writeFormat         ascii;
+writePrecision      8;
+writeCompression    off;
+
+timeFormat          general;
+timePrecision       6;
+
+runTimeModifiable   true;
+
+// Helpful outputs for external aero
+functions
+{
+    forces
+    {
+        type            forces;
+        libs            ("libforces.so");
+
+        patches         (car);
+
+        // Incompressible: tell forces to use constant rhoInf
+        rho             rhoInf;
+        rhoInf          1.225;
+
+        // If you use kinematic pressure p (typical simpleFoam)
+        pName           p;
+        UName           U;
+
+        // Force direction conventions:
+        // drag  = +x, lift = +z (adjust if your axes differ)
+        CofR            (0 0 0);
+
+        // Write every 10 iterations
+        writeControl    timeStep;
+        writeInterval   10;
+
+        log             yes;
+    }
+
+    forceCoeffs
+    {
+        type            forceCoeffs;
+        libs            ("libforces.so");
+
+        patches         (car);
+
+        // Incompressible: tell forceCoeffs to use constant rhoInf
+        rho             rhoInf;
+        rhoInf          1.225;
+
+        pName           p;
+        UName           U;
+
+        CofR            (0 0 0);
+        liftDir         (0 0 1);
+        dragDir         (1 0 0);
+        pitchAxis       (0 1 0);
+
+        // Reference values (CHANGE THESE to your model):
+        // Aref = frontal area (m^2), lRef = characteristic length (m)
+        Aref            2.2;
+        lRef            2.7;
+
+        magUInf         10;
+
+        writeControl    timeStep;
+        writeInterval   10;
+
+        log             yes;
+    }
+
+    yPlus
+    {
+        type            yPlus;
+        libs            ("libfieldFunctionObjects.so");
+
+        patches         (car);
+
+        writeControl    timeStep;
+        writeInterval   50;
+
+        log             yes;
+    }
+}
+
+// ************************************************************************* //
+

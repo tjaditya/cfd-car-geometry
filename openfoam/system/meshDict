@@ -1,0 +1,55 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      meshDict;
+}
+
+// Input surface
+surfaceFile "constant/triSurface/car.stl";
+
+// Base sizing (first-success)
+maxCellSize 0.6;
+minCellSize 0.15;
+
+// Force computational domain (external flow box)
+rootBox (-12 -12 0) (50 12 12);
+
+// Boundary layers OFF (dictionary required)
+boundaryLayers
+{
+    nLayers 0;
+}
+
+// Surface patch name for the STL
+boundaryPatch
+{
+    name car;
+    type wall;
+}
+
+// Refinement controls supported by your build:
+// Valid types: box cone hollowCone line sphere
+objectRefinements
+{
+    // Refine in a box that tightly encloses the car (a bit larger than the STL bbox)
+    nearCar
+    {
+        type box;
+        min (-5.5 -1.5 0);
+        max (1.0  1.5  2.0);
+        additionalRefinementLevels 2;
+    }
+
+    // Refine wake region behind the car
+    wake
+    {
+        type box;
+        min (0 -3 0);
+        max (35 3 4);
+        additionalRefinementLevels 1;
+    }
+}
+
+renumberMesh true;
