@@ -1,0 +1,1 @@
+Geometry preparation notes 
