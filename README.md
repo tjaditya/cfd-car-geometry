@@ -4,6 +4,12 @@ This repository contains the artifacts and configuration for an early-stage exte
 
 **Pipeline:** Blender → STL → snappyHexMesh → OpenFOAM (simpleFoam) → ParaView
 
+## Project Page (Portfolio)
+
+A detailed walkthrough of the design process, CFD pipeline, and qualitative results is documented here:
+
+👉 https://adityatj.github.io/projects/cfd-car-geometry/
+
 ## What this project demonstrates
 - Converting a concept car surface into a CFD-ready, watertight geometry
 - Building a stable meshing + solver pipeline using open-source tools
