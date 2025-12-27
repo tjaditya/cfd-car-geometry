@@ -29,6 +29,3 @@ Key simplifications:
 Selected images from the run (mesh, convergence, velocity slices, streamtracers) are in:
 - `postprocessing/screenshots/`
 - and referenced from the portfolio page
-
-## License
-This repo is intended for academic/portfolio use.
